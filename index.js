@@ -102,7 +102,7 @@ calendar_heatmap.create = function(opts) {
         num_months = day_extent[1].diff(day_extent[0], "months");
 
     var months = _.map(d3.range(first_month, first_month + num_months + 1), function(m) {
-        return moment().month(m).format("MMM");
+        return moment().month(m).format("MMMM");
     });
 
     // create calendar domain
@@ -301,7 +301,8 @@ calendar_heatmap.create = function(opts) {
             .enter()
             .append("text")
             .attr("x", function(d) {
-                return (d.week_number)*tile_width + (d.month_number)*tile_width - ((d.weeks - 1)*tile_width) + (d.weeks - 1)*tile_width/2 - 2;
+                // return (d.week_number)*tile_width - ((d.weeks - 1)*tile_width) + (d.weeks - 1)*tile_width/2 - 2;
+                return (d.week_number)*tile_width - ((d.weeks - 1)*tile_width);
             })
             .attr("y", 0)
             .attr("fill", options.accent_color)
@@ -379,8 +380,12 @@ calendar_heatmap.create = function(opts) {
                 .attr("stop-color", c);
         });
 
+        var translate = "translate(" + (tile_width*(wn + 0.5) + margin.left - leg_width) + ", " + (margin.top - 32) + ")"
+        var translate_right = "translate(" + (tile_width*(wn + 0.5) + margin.left) + ", " + (margin.top - 32) + ")"
+
         legend_group.append("rect")
-            .attr("x", margin.left + tile_width/2)
+            // .attr("x", margin.left + tile_width/2)
+            .attr("transform", translate)
             .attr("y", y_pos)
             .attr("width", leg_width)
             .attr("height", 12)
@@ -389,7 +394,8 @@ calendar_heatmap.create = function(opts) {
         legend_group.append("text")
             .attr("text-anchor", "start")
             .text(options.legend_title ? options.legend_title : options.fill_var)
-            .attr("x", margin.left + tile_width/2)
+            // .attr("x", margin.left + tile_width/2)
+            .attr("transform", translate)
             .attr("y", y_pos - 7)
             .attr("style", "font-size: 12px; font-weight: 600")
             .attr("fill", options.accent_color);
@@ -397,7 +403,8 @@ calendar_heatmap.create = function(opts) {
         legend_group.append("text")
             .attr("text-anchor", "middle")
             .text(d3.format(options.numeric_format)(d3.round(min_val, options.round)))
-            .attr("x", margin.left + tile_width/2)
+            // .attr("x", margin.left + tile_width/2)
+            .attr("transform", translate)
             .attr("y", y_pos + 25)
             .style("font-size", "11px")
             .attr("fill", options.accent_color);
@@ -405,7 +412,8 @@ calendar_heatmap.create = function(opts) {
         legend_group.append("text")
             .attr("text-anchor", "middle")
             .text(d3.format(options.numeric_format)(d3.round(max_val, options.round)))
-            .attr("x", margin.left + leg_width + tile_width/2)
+            // .attr("x", margin.left + leg_width + tile_width/2)
+            .attr("transform", translate_right)
             .attr("y", y_pos + 25)
             .style("font-size", "11px")
             .attr("fill", options.accent_color);
@@ -418,7 +426,7 @@ calendar_heatmap.create = function(opts) {
     //// toggle the layout of months
 
     // initial layout of months
-    var months_expanded = false;
+    var months_expanded = true;
     var tiles_width = tile_width*(wn + 1);
 
     function expandMonths() {
@@ -430,7 +438,7 @@ calendar_heatmap.create = function(opts) {
             .transition()
             .delay(1/(mn + 5)*500)
             .duration(1000)
-            .attr("transform", "translate(" + (tile_width*(wn + mn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
+            .attr("transform", "translate(" + (tile_width*(wn + 0.5) + margin.left - toggle_width) + ", " + (margin.top - 32) + ")")
             // prevent multiple clicks before layout is finished transitioning
             .each("end", function() {
                 d3.select(this).style("pointer-events", "auto");
@@ -449,7 +457,8 @@ calendar_heatmap.create = function(opts) {
             })
             .duration(1000)
             .attr("x", function(d) {
-                return d.week_number*tile_width + d.month_number*tile_width + margin.left;
+                // return d.week_number*tile_width + d.month_number*tile_width + margin.left;
+                return d.week_number*tile_width + margin.left;
             })
             // suppress mouseover events until (just after) transition is finished
             .each("end", function(d, i) {
@@ -464,7 +473,7 @@ calendar_heatmap.create = function(opts) {
         tiles_width = tile_width*(wn + 1);
 
         month_labels.transition()
-            // .delay(100)
+            .delay(100)
             .duration(400)
             .style("opacity", 0)
             .remove();
@@ -500,6 +509,7 @@ calendar_heatmap.create = function(opts) {
             });
         months_expanded = false;
     }
+    expandMonths();
 
     //// handle layout toggle button events
     if (options.show_toggle) {

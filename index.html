@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="calendar_heatmap.bundle.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:700,400,300" rel="stylesheet" type="text/css">
+    <style>
+      body {
+        font-family: "Lato", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script>
+      d3.json("fl_daily_mv_accidents_2013.json", function(err, dat) {
+        calendar_heatmap.create({
+          // missing_as_zero: false,
+          // weekdays_only: true,
+          target: "#container",
+          data: dat,
+          date_var: "day",
+          fill_var: "fatalities",
+          missing_as_zero: true,
+          title: "打卡记录 (2016)",
+          // color_scheme: calendar_heatmap.color_ramps.Greens,
+          color_scheme: ["rgb(237,237,237)", "rgb(217,239,139)", "rgb(166,217,106)", "rgb(102,189,99)", "rgb(26,152,80)", "rgb(0,104,55)", "rgb(99, 121, 57)", "rgb(59, 100, 39)"],
+          // color_scheme: ["rgb(237,237,237)", "rgb(217,239,139)", "rgb(102,189,99)", "rgb(0,104,55)"],
+          stroke_color: "whitesmoke",
+          // date_format: "%m-%d-%Y",
+          legend_title: "连续打卡天数",
+          // show_toggle: false,
+          // show_tooltip: true,
+          on_click: function(d) { console.log(d); }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -2,6 +2,7 @@
 flexible D3 calendar heatmaps a la GitHub contribution calendars
 
 ![](img/calendar_heatmap_example.png)
+![](img/example2.png)
 
 ## including in your project
 Using node:
